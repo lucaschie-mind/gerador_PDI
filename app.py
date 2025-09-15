@@ -13,6 +13,32 @@ from sqlalchemy import create_engine
 from sqlalchemy import text as sa_text
 from datetime import datetime, date, timedelta
 
+def _get_cfg(name, required=False, default=None):
+    # tenta env; se existir st.secrets localmente, tenta também
+    val = os.getenv(name)
+    if val is None and hasattr(st, "secrets"):
+        try:
+            val = st.secrets.get(name)
+        except Exception:
+            val = None
+    if (val is None or str(val).strip() == "") and required:
+        st.error(f"⚠️ Variável '{name}' não está definida. Configure em Railway → Settings → Variables.")
+        st.stop()
+    return val if (val is not None and str(val).strip() != "") else default
+
+# OBRIGATÓRIAS
+DATABASE_URL = _get_cfg("DATABASE_URL", required=True)
+API_URL      = _get_cfg("API_URL",      required=True)
+
+# OPCIONAL (se não tiver, usa a mesma do principal)
+DATABASE_URL_RESUMO_SEMANAL = _get_cfg("DATABASE_URL_RESUMO_SEMANAL", required=False, default=DATABASE_URL)
+
+# (se você envia e-mail pelo Graph)
+CLIENT_ID     = _get_cfg("CLIENT_ID",     required=False)
+CLIENT_SECRET = _get_cfg("CLIENT_SECRET", required=False)
+TENANT_ID     = _get_cfg("TENANT_ID",     required=False)
+SENDER_EMAIL  = _get_cfg("SENDER_EMAIL",  required=False)
+
 
 foco = 'pdi'
 
