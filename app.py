@@ -31,7 +31,7 @@ DATABASE_URL = _get_cfg("DATABASE_URL", required=True)
 API_URL      = _get_cfg("API_URL",      required=True)
 
 # OPCIONAL (se não tiver, usa a mesma do principal)
-DATABASE_URL_RESUMO_SEMANAL = _get_cfg("DATABASE_URL_RESUMO_SEMANAL", required=False, default=DATABASE_URL)
+DATABASE_URL_RESUMO_SEMANAL = _get_cfg("DATABASE_URL_RESUMO_SEMANAL", required=False)
 
 # (se você envia e-mail pelo Graph)
 CLIENT_ID     = _get_cfg("CLIENT_ID",     required=False)
@@ -384,13 +384,46 @@ if foco == "pdi" and campos_ok:
         4- Indicações de pontos de desenvolvimento:
         """
         sessionId = f"{id_pessoa}:{dt.date.today().isoformat()}"
-        r = requests.post(API_URL, json={
-            "question": pergunta_prompt,
-            "overrideConfig": {"sessionId": sessionId}
-        })
-        output = r.json()
-        resposta = output.get("text", "")
-        st.session_state["diagnostico"] = resposta
+
+        try:
+            headers = {"Content-Type": "application/json"}
+            # Se você tiver uma API_KEY do Flowise, descomente a linha abaixo
+            # headers["Authorization"] = f"Bearer {FLOWISE_API_KEY}"
+
+            r = requests.post(
+                API_URL,
+                json={
+                    "question": pergunta_prompt,
+                    "overrideConfig": {"sessionId": sessionId}
+                },
+                headers=headers,
+                timeout=90
+            )
+            r.raise_for_status()
+            output = r.json()
+
+            # Debug: mostra no Streamlit o que veio cru
+            st.write("[DEBUG] Resposta bruta Flowise:", output)
+
+            # Tenta extrair de várias chaves possíveis
+            resposta = (
+                output.get("text")
+                or output.get("answer")
+                or output.get("output")
+                or (output["data"][0]["text"] if "data" in output and output["data"] else "")
+                or ""
+            )
+
+            if not resposta.strip():
+                st.warning("⚠️ A API do Flowise não retornou conteúdo.")
+            else:
+                st.session_state["diagnostico"] = resposta
+
+        except Exception as e:
+            st.error(f"[ERRO] Falha ao chamar Flowise: {e}")
+            if "r" in locals():
+                st.text(f"[DEBUG] Conteúdo recebido: {r.text}")
+
 
     if "diagnostico" in st.session_state:
         diag_edit = st.text_area("Edite seu diagnóstico:", value=st.session_state["diagnostico"], height=300)
