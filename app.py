@@ -387,25 +387,18 @@ if foco == "pdi" and campos_ok:
 
         try:
             headers = {"Content-Type": "application/json"}
-            # Se você tiver uma API_KEY do Flowise, descomente a linha abaixo
+            # Se tiver uma API Key no Flowise, descomente a linha abaixo
             # headers["Authorization"] = f"Bearer {FLOWISE_API_KEY}"
 
             r = requests.post(
                 API_URL,
-                json={
-                    "question": pergunta_prompt,
-                    "overrideConfig": {"sessionId": sessionId}
-                },
+                json={"question": pergunta_prompt, "overrideConfig": {"sessionId": sessionId}},
                 headers=headers,
                 timeout=90
             )
             r.raise_for_status()
             output = r.json()
 
-            # Debug: mostra no Streamlit o que veio cru
-            st.write("[DEBUG] Resposta bruta Flowise:", output)
-
-            # Tenta extrair de várias chaves possíveis
             resposta = (
                 output.get("text")
                 or output.get("answer")
@@ -415,14 +408,15 @@ if foco == "pdi" and campos_ok:
             )
 
             if not resposta.strip():
-                st.warning("⚠️ A API do Flowise não retornou conteúdo.")
+                st.warning("⚠️ A API não retornou conteúdo.")
             else:
                 st.session_state["diagnostico"] = resposta
 
         except Exception as e:
-            st.error(f"[ERRO] Falha ao chamar Flowise: {e}")
+            st.error(f"[ERRO] Falha ao gerar diagnóstico: {e}")
             if "r" in locals():
-                st.text(f"[DEBUG] Conteúdo recebido: {r.text}")
+                st.text(r.text)
+
 
 
     if "diagnostico" in st.session_state:
