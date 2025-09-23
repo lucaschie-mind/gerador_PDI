@@ -83,7 +83,7 @@ if "autenticado" not in st.session_state or not st.session_state["autenticado"]:
 email = st.session_state["email"]
 
 #Parametros:
-delta_tempo_resumo = 60 # dias
+delta_tempo_resumo = 45 # dias
 delta_tempo = 90       # dias
 tempo_atualizacao = 180  # dias
 
@@ -372,7 +372,6 @@ if foco == "pdi" and campos_ok:
         Nesse momento, você como especialista deverá fazer um diagnóstico que ajude a pessoa a tomar a decisão do que pode fazer mais sentido se desenvolver.
         para isso, aqui estão algumas informações da pessoa {resumo_pessoa}.
         O feedback, caso a pessoa tenha, foi esse aqui {feedback}.
-        O último PDI dela, caso ela tenha foi esse aqui: {pdi}.
         os pontos fortes são: {pontos_fortes} e os pontos de desenvolvimento são: {pontos_desenvolvimento}.
         Na tarefa atual essa são as tarefas e um pouco de como ela é: {resultado}.
         e os objetivos são: {objetivos} e que tem o seguinte histórico de interação com você: {historico_bot}.
@@ -381,7 +380,7 @@ if foco == "pdi" and campos_ok:
         1- Resumo da pessoa até o momento:
         2- Gaps na posição atual e direcional para a posição atual: 
         3- Futuro dado posição atual e objetivos de carreira:
-        4- Indicações de pontos de desenvolvimento:
+        4- Indicações de pontos de desenvolvimento:(Citando competências, habilidades e atitudes que dado as informações a pessoa deveria considerar desenvolver, bem como os motivos.)
         """
         sessionId = f"{id_pessoa}:{dt.date.today().isoformat()}"
 
