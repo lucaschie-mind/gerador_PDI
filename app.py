@@ -393,7 +393,7 @@ if foco == "pdi" and campos_ok:
                 API_URL,
                 json={"question": pergunta_prompt, "overrideConfig": {"sessionId": sessionId}},
                 headers=headers,
-                timeout=90
+                timeout=150
             )
             r.raise_for_status()
             output = r.json()
