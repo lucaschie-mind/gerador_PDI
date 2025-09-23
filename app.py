@@ -380,7 +380,7 @@ if foco == "pdi" and campos_ok:
         1- Resumo da pessoa até o momento:
         2- Gaps na posição atual e direcional para a posição atual: 
         3- Futuro dado posição atual e objetivos de carreira:
-        4- Indicações de pontos de desenvolvimento:(Citando competências, habilidades e atitudes que dado as informações a pessoa deveria considerar desenvolver, bem como os motivos.)
+        4- Indicações de pontos de desenvolvimento:(Citando competências, habilidades e atitudes que dado as informações a pessoa deveria considerar desenvolver, bem como os motivos. Foque apenas em sugestões sem montar um PDI ou usar o 70 20 10. é apenas recomendação.)
         """
         sessionId = f"{id_pessoa}:{dt.date.today().isoformat()}"
 
