@@ -83,7 +83,7 @@ if "autenticado" not in st.session_state or not st.session_state["autenticado"]:
 email = st.session_state["email"]
 
 #Parametros:
-delta_tempo_resumo = 45 # dias
+delta_tempo_resumo = 30 # dias
 delta_tempo = 90       # dias
 tempo_atualizacao = 180  # dias
 
